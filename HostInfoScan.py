@@ -40,47 +40,6 @@ def get_ip_list(ip_str) -> list:
     return ip_list
 
 
-'''
-def get_ip_list(ip) -> list:
-    ip_list = []
-    iptonum = lambda x: sum([256 ** j * int(i) for j, i in enumerate(x.split('.')[::-1])])
-    numtoip = lambda x: '.'.join([str(int(x / (256 ** i)) % 256) for i in range(3, -1, -1)])
-    if '-' in ip:
-        ip_range = ip.split('-')
-        ip_start = int(iptonum(ip_range[0]))
-        ip_end = int(iptonum(ip_range[1]))
-        ip_count = ip_end - ip_start
-        if ip_count >= 0 and ip_count <= 65536:
-            for ip_num in range(ip_start, ip_end + 1):
-                ip_list.append(numtoip(ip_num))
-        else:
-            print('-i wrong format')
-
-    elif '.txt' in ip:
-        ip_config = open(ip, 'r')
-        for ip in ip_config:
-            ip_list.extend(get_ip_list(ip.strip()))
-        ip_config.close()
-    else:
-        ip_split = ip.split('.')
-        net = len(ip_split)
-        if net == 2:
-            for b in range(1, 255):
-                for c in range(1, 255):
-                    ip = "%s.%s.%d.%d" % (ip_split[0], ip_split[1], b, c)
-                    ip_list.append(ip)
-        elif net == 3:
-            for c in range(1, 255):
-                ip = "%s.%s.%s.%d" % (ip_split[0], ip_split[1], ip_split[2], c)
-                ip_list.append(ip)
-        elif net == 4:
-            ip_list.append(ip)
-        else:
-            print("-i wrong format")
-
-    return ip_list
-'''
-
 def attribute_name(Target_Info_bytes):
     global length
     att_name_length = int.from_bytes(Target_Info_bytes[length + 2:length + 4], byteorder='little')
