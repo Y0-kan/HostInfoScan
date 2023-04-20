@@ -11,10 +11,10 @@
 
 ## 效果
 域内机器：
-![image](https://user-images.githubusercontent.com/96424613/233252756-76d4f9ac-8305-44d7-9b67-1f5b3e6c3612.png)
+![image](images/20230420143607.jpg)
 
 工作组机器：
-![image](https://user-images.githubusercontent.com/96424613/233252857-b9c152c0-a64c-4e41-a509-07df0f8d1f0b.png)
+![image](images/20230420143625.jpg)
 
 ## 使用
 ```
