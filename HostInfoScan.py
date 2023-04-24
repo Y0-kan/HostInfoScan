@@ -5,6 +5,7 @@ from base64 import b64encode
 from argparse import ArgumentParser, FileType
 from queue import Queue
 from threading import Thread
+from threading import RLock
 import sys
 import socket
 import ipaddress
@@ -70,6 +71,8 @@ def send_packet(ip):
 
 def get_osinfo(ip):
     global length
+    lock = RLock()
+
     osinfo = {
         "NetBIOS_domain_name": "",
         "NetBIOS_computer_name": "",
@@ -95,11 +98,14 @@ def get_osinfo(ip):
         Target_Info_Length_bytes = packet2[int('0xa0', 16) - 54 + 2:int('0xa0', 16) - 54 + 4]
         Target_Info_Length = int.from_bytes(Target_Info_Length_bytes, byteorder='little')
         Target_Info_bytes = packet2[-Target_Info_Length:-4]  # 最后四个0x00000000
+        lock.acquire()  # 上锁
         print("[*] " + ip + ' OS Info :')
         print("\t[->]", "OS_Verison :", OS_Verison)
+        #print(Target_Info_bytes)
         for k in osinfo.keys():
             osinfo[k] = attribute_name(Target_Info_bytes)
             print("\t[->]", k, ":", osinfo[k])
+        lock.release()  # 开锁
         length = 0
         osinfo["OS_Verison"] = OS_Verison
         result = {ip: osinfo}
@@ -110,6 +116,7 @@ def get_osinfo(ip):
         sock.close()
 
 def get_addres(ip):
+    lock = RLock()
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         sock.settimeout(TIME_OUT)
@@ -127,6 +134,7 @@ def get_addres(ip):
         hostname_list = packet_v2.split(b"\x00\x00")
         #print(hostname_list)
         result = {ip:[]}
+        lock.acquire()  # 上锁
         print("[*] " + ip + ' Network Info :')
         for h in hostname_list:
             h = h.replace(b'\x07\x00',b'')
@@ -136,6 +144,7 @@ def get_addres(ip):
             if h.decode() != '':
                 print("\t[->]" + h.decode())
                 result[ip].append(h)
+        lock.release()  # 开锁
         #print(result)
         return result
     except Exception as e:
